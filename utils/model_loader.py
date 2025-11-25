@@ -6,7 +6,8 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
 # from langchain_openai import ChatOpenAI
-
+from logger.custom_logger import CustomLogger
+from exception.custom_exception import DocumentPortalException
 
 log = CustomLogger().get_logger(__name__)
 
@@ -99,14 +100,26 @@ class ModelLoader:
 if __name__ == "__main__":
     loader = ModelLoader()
 
-    # Test embedding model loading
+    # Test Embedding
     embeddings = loader.load_embeddings()
     print(f"Embedding Model Loaded: {embeddings}")
+    result = embeddings.embed_query("Hello, how are you?")
+    print(f"Embedding Result: {result}")
 
-    # Test LLM loading based on YAML config
+    # Test LLM
     llm = loader.load_llm()
     print(f"LLM Loaded: {llm}")
-
-    # Test the ModelLoader
     result = llm.invoke("Hello, how are you?")
-    print(f"LLM Result: {result.content}")
+    print(f"LLM Result: {result.content}")\
+    
+    # # Test embedding model loading
+    # embeddings = loader.load_embeddings()
+    # print(f"Embedding Model Loaded: {embeddings}")
+
+    # # Test LLM loading based on YAML config
+    # llm = loader.load_llm()
+    # print(f"LLM Loaded: {llm}")
+
+    # # Test the ModelLoader
+    # result = llm.invoke("Hello, how are you?")
+    # print(f"LLM Result: {result.content}")
