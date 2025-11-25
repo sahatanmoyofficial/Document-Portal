@@ -19,7 +19,7 @@ class DocumentHandler:
     Automatically logs all actions and supports session-based organization.
     """
 
-    def __init__(self, data_dir=None, session_id=None):  # <-- indented inside class
+    def __init__(self, data_dir=None, session_id=None):
         try:
             self.log = CustomLogger().get_logger(__name__)
             self.data_dir = data_dir or os.getenv(
@@ -68,7 +68,6 @@ class DocumentHandler:
             raise DocumentPortalException("Error saving PDF", e) from e
 
 
-
     def read_pdf(self, pdf_path: str) -> str:
         try:
             text_chunks = []
@@ -95,29 +94,28 @@ if __name__ == "__main__":
     from pathlib import Path
     from io import BytesIO
 
-    pdf_path = r"E:\\Tanmoy Saha\\Upskill\\Tech Stack\\Projects\\Document Portal\data\\document_analysis\\sample.pdf"
+    pdf_path = r"E:\Tanmoy Saha\Upskill\Tech Stack\Projects\Document Portal\data\document_analysis\sample.pdf"
 
+    # Everything below MUST be indented inside this if block!
+    class DummyFile:
+        def __init__(self, file_path):
+            self.name = Path(file_path).name
+            self._file_path = file_path
 
-class DummyFile:
-    def __init__(self, file_path):
-        self.name = Path(file_path).name
-        self._file_path = file_path
+        def getbuffer(self):
+            return open(self._file_path, "rb").read()
 
-    def getbuffer(self):
-        return open(self._file_path, "rb").read()
+    dummy_pdf = DummyFile(pdf_path)
 
+    handler = DocumentHandler()  # session_id="test_session1")
 
-dummy_pdf = DummyFile(pdf_path)
+    try:
+        saved_path = handler.save_pdf(dummy_pdf)
+        print(saved_path)
 
-handler = DocumentHandler()#session_id="test_session1")
+        content = handler.read_pdf(saved_path)
+        print("PDF Content:")
+        print(content[:500])  # Print first 500 characters
 
-try:
-    saved_path = handler.save_pdf(dummy_pdf)
-    print(saved_path)
-
-    content = handler.read_pdf(saved_path)
-    print("PDF Content:")
-    print(content[:500])  # Print first 500 characters
-
-except Exception as e:
-    print(f"Error: {e}")
+    except Exception as e:
+        print(f"Error: {e}")
