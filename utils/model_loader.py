@@ -1,5 +1,11 @@
 import os
 import sys
+from pathlib import Path
+
+# Add project root to Python path - this allows imports to work when running directly
+project_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(project_root))
+
 from dotenv import load_dotenv
 from utils.config_loader import load_config
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
@@ -29,7 +35,7 @@ class ModelLoader:
         """
         Validate necessary environment variables.
         Ensure API keys exist.
-    """
+        """
 
         required_vars = ["GOOGLE_API_KEY", "GROQ_API_KEY"]
         self.api_keys = {key: os.getenv(key) for key in required_vars}
@@ -97,6 +103,7 @@ class ModelLoader:
             log.error("Unsupported LLM provider", provider=provider)
             raise ValueError(f"Unsupported LLM provider: {provider}")
 
+
 if __name__ == "__main__":
     loader = ModelLoader()
 
@@ -110,16 +117,4 @@ if __name__ == "__main__":
     llm = loader.load_llm()
     print(f"LLM Loaded: {llm}")
     result = llm.invoke("Hello, how are you?")
-    print(f"LLM Result: {result.content}")\
-    
-    # # Test embedding model loading
-    # embeddings = loader.load_embeddings()
-    # print(f"Embedding Model Loaded: {embeddings}")
-
-    # # Test LLM loading based on YAML config
-    # llm = loader.load_llm()
-    # print(f"LLM Loaded: {llm}")
-
-    # # Test the ModelLoader
-    # result = llm.invoke("Hello, how are you?")
-    # print(f"LLM Result: {result.content}")
+    print(f"LLM Result: {result.content}")
